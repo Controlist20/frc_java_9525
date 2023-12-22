@@ -8,6 +8,18 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import edu.wpi.first.wpilibj.Joystick;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
+
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -20,6 +32,15 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  CANSparkMax driveLeftSpark = new CANSparkMax(1, MotorType.kBrushed);
+  CANSparkMax driveRightSpark = new CANSparkMax(2, MotorType.kBrushed);
+
+  VictorSPX driveLeftVictor = new VictorSPX(3);
+  VictorSPX driveRightVictor = new VictorSPX(4);
+
+  Joystick jDrive = new Joystick(0);
+
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -29,6 +50,11 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    driveLeftSpark.setInverted(true);
+    driveRightSpark.setInverted(false);
+    driveLeftVictor.setInverted(false);
+    driveRightVictor.setInverted(true);
   }
 
   /**
@@ -74,11 +100,16 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+
+  }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // motor speed range is -1.0 to 1.0
+
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
@@ -90,11 +121,21 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
-
+  public void testInit() {
+    // driveLeftSpark.setIdleMode(IdleMode.kCoast);
+    // driveRightSpark.setIdleMode(IdleMode.kCoast);
+    driveLeftVictor.setNeutralMode(NeutralMode.Coast);
+    driveRightVictor.setNeutralMode(NeutralMode.Coast);
+  }
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    // motor speed range is -1.0 to 1.0
+    // driveLeftSpark.set(-jDrive.getRawAxis(1));
+    // driveRightSpark.set(-jDrive.getRawAxis(5));
+    driveLeftVictor.set(ControlMode.PercentOutput, -jDrive.getRawAxis(1));
+    driveRightVictor.set(ControlMode.PercentOutput, -jDrive.getRawAxis(5));
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
