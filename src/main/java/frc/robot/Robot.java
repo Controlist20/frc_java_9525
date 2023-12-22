@@ -57,6 +57,20 @@ public class Robot extends TimedRobot {
     driveRightVictor.setInverted(true);
   }
 
+  public void setDriveMotors(double forward, double turn) {
+    SmartDashboard.putNumber("Drive forward power (%)", forward);
+    SmartDashboard.putNumber("Drive turn power (%)", turn);
+
+    double left = forward + turn;
+    double right = forward - turn;
+
+    SmartDashboard.putNumber("Drive left power (%)", left);
+    SmartDashboard.putNumber("Drive right power (%)", right);
+
+    driveLeftVictor.set(ControlMode.PercentOutput, left);
+    driveRightVictor.set(ControlMode.PercentOutput, right);
+  }
+
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
@@ -101,6 +115,10 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    // driveLeftSpark.setIdleMode(IdleMode.kCoast);
+    // driveRightSpark.setIdleMode(IdleMode.kCoast);
+    driveLeftVictor.setNeutralMode(NeutralMode.Coast);
+    driveRightVictor.setNeutralMode(NeutralMode.Coast);
 
   }
 
@@ -108,7 +126,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // motor speed range is -1.0 to 1.0
-
+    setDriveMotors(-jDrive.getRawAxis(1), jDrive.getRawAxis(4));
   }
 
   /** This function is called once when the robot is disabled. */
