@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
+// import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -32,8 +32,8 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  CANSparkMax driveLeftSpark = new CANSparkMax(1, MotorType.kBrushed);
-  CANSparkMax driveRightSpark = new CANSparkMax(2, MotorType.kBrushed);
+  // CANSparkMax driveLeftSpark = new CANSparkMax(1, MotorType.kBrushed);
+  // CANSparkMax driveRightSpark = new CANSparkMax(2, MotorType.kBrushed);
 
   VictorSPX driveLeftVictor = new VictorSPX(3);
   VictorSPX driveRightVictor = new VictorSPX(4);
@@ -51,8 +51,11 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    driveLeftSpark.setInverted(true);
-    driveRightSpark.setInverted(false);
+    // We need to invert one side of the drivetrain so that positive voltages
+    // result in both sides moving forward. Depending on how your robot's
+    // gearbox is constructed, you might have to invert the left side instead.
+    // driveLeftSpark.setInverted(true);
+    // driveRightSpark.setInverted(false);
     driveLeftVictor.setInverted(false);
     driveRightVictor.setInverted(true);
   }
@@ -125,7 +128,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // motor speed range is -1.0 to 1.0
+    // Drive with split arcade drive.
+    // That means that the Y axis of the left stick moves forward
+    // and backward, and the X of the right stick turns left and right.
+    
     setDriveMotors(-jDrive.getRawAxis(1), jDrive.getRawAxis(4));
   }
 
